@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import MainNavBar from "../MainNavBar/MainNavBar";
 import MainPageBodyOne from "./MainBody/MainPageBodyOne";
 import MainPageBodyTwo from "./MainBody/MainPageBodyTwo";
@@ -7,25 +7,23 @@ import "./MainPage.style.css"
 
 function MainPage() {
   return (
-    <div>
-      <section
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          zIndex: 99
-        }}
-      >
+    <div style={{ width: "100%", overflowX: "hidden" }}>
+      <section>
         <MainNavBar />
       </section>
-      <section className="MainPageBanner" style={{ width: "100vw" }}>
-        <Typography variant="h1">Hello</Typography>
+      <section style={{ position: "relative" }}>
+        <Box className="MainPageBanner" sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", width: "100%" }}>
+          <Stack sx={{ alignItems: "flex-start", width: { xs: "42%", md: "33%" } }}>
+            <Typography variant="body1" sx={{ textAlign: "left", fontSize: { xs: "18px", md: "27px" }, fontWeight: { xs: "800" } }}>Invest Smart,</Typography>
+            <Typography variant="body1" sx={{ textAlign: "left", fontSize: { xs: "18px", md: "27px" }, fontWeight: { xs: "800" } }}>Practice Smarter.</Typography>
+            <Typography variant="body1" sx={{ textAlign: "left", fontSize: { xs: "12px", md: "15px" }, fontWeight: { xs: "600" } }}>Unleash your full investment potential — Get start today!</Typography>
+          </Stack>
+        </Box>
       </section>
-      <section className="MainPageBodyOne" style={{ width: "90vw", margin: "auto" }}>
+      <section className="MainPageBodyOne" style={{ width: "90%", margin: "auto" }}>
         <MainPageBodyOne />
       </section>
-      <section className="MainPageBodyTwo" style={{ width: "90vw", margin: "auto" }}>
+      <section className="MainPageBodyTwo" style={{ width: "90%", margin: "auto" }}>
         <MainPageBodyTwo />
       </section>
     </div>

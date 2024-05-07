@@ -3,7 +3,7 @@ import MainPageTwoImg from "../../../assets/MainPageTwoImg.svg"
 
 function MainPageBodyTwo() {
     return (
-        <Grid container spacing={0.5} sx={{ height: "calc(100vh - 80px )", marginTop: "50px" }}>
+        <Grid container spacing={0.5} sx={{ height: "100vh" }}>
             <Grid item md={12} lg={7}>
                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {/* <img src={MainPageTwoImg} style={{ width: "600px" }} /> */}

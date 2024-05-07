@@ -3,7 +3,7 @@ import MainPageOneImg from "../../../assets/MainPageOneImg.svg"
 
 function MainPageBodyOne() {
   return (
-    <Grid container spacing={0.5} sx={{ height: "calc(100vh - 80px )", marginTop: "50px" }}>
+    <Grid container spacing={0.5} sx={{ height: "100vh" }}>
       <Grid item md={12} lg={5}>
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "flex-start" }}>
           <Typography component="span" sx={{ fontSize: "1.8rem", fontWeight: "600", fontFamily: "Lato,sans-serif", textAlign: "left" }}>Grow fast,</Typography>

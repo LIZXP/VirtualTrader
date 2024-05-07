@@ -1,8 +1,7 @@
 .MainPageBanner {
     background-image: url(../../assets/mainpage_banner.jpg);
     height: 630px;
-    width: 100%;
-    margin-top: 80px;
+    width: 100vw;
     background-size: cover;
     background-position: center;
 }
@@ -11,14 +10,15 @@
     .MainPageBanner {
         height: 490px;
         width: 100%;
+        margin-top: 84px;
     }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (min-width: 900px) {
     .MainPageBanner {
         height: 390px;
         width: 100%;
-        margin-top: 64px;
+        margin-top: 84px;
     }
 }
 
@@ -26,6 +26,6 @@
     .MainPageBanner {
         height: 260px;
         width: 100%;
-        margin-top: 56px;
+        margin-top: 54px;
     }
 }
