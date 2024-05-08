@@ -4,21 +4,14 @@
     width: 100vw;
     background-size: cover;
     background-position: center;
+    margin-top: 84px;
 }
 
-@media only screen and (max-width: 1280px) {
-    .MainPageBanner {
-        height: 490px;
-        width: 100%;
-        margin-top: 84px;
-    }
-}
-
-@media only screen and (min-width: 900px) {
+@media only screen and (max-width: 900px) {
     .MainPageBanner {
         height: 390px;
         width: 100%;
-        margin-top: 84px;
+        
     }
 }
 

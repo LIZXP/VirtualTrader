@@ -67,7 +67,7 @@ function MainNavBar() {
           ))}
         </Menu>
       </Box>
-      <Box className="mainpageNavBar" sx={{ width: "100%", display: { sm: "none", md: "block" }, position: "fixed", backgroundColor: "whitesmoke", zIndex: 99 }}>
+      <Box className="mainpageNavBar" sx={{ width: "100%", display: { xs: "none", md: "block" }, position: "fixed", backgroundColor: "whitesmoke", zIndex: 99 }}>
         <Grid container spacing={0}>
           <Grid item sx={{ height: "42px", margin: "0 auto" }} md={10} lg={8}>
             <Box className="mainpageNavBarRowOne" sx={{ height: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 10px" }}>
