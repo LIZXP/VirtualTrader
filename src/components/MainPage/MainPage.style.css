@@ -1,24 +1,47 @@
 .MainPageBanner {
-    background-image: url(../../assets/mainpage_banner.jpg);
-    height: 630px;
-    width: 100vw;
-    background-size: cover;
-    background-position: center;
-    margin-top: 84px;
+  background-image: url(../../assets/mainpage_banner.jpg);
+  height: 630px;
+  background-size: cover;
+  background-position: center;
+  margin-top: 84px;
 }
 
-@media only screen and (max-width: 900px) {
-    .MainPageBanner {
-        height: 390px;
-        width: 100%;
-        
-    }
+.mainPageOneVideo {
+  width: 450px;
+  border-radius: 15px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .mainPageOneVideo {
+    width: 320px;
+  }
+}
+
+@media only screen and (max-width: 899px) {
+  .MainPageBanner {
+    height: 390px;
+  }
+
+  .mainPageOneVideo {
+    width: 520px;
+  }
+
+  .mobileHamburgerIcon{
+    width:39px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
-    .MainPageBanner {
-        height: 260px;
-        width: 100%;
-        margin-top: 54px;
-    }
+  .MainPageBanner {
+    height: 260px;
+    margin-top: 54px;
+  }
+
+   .mainPageOneVideo {
+    width: 320px;
+  }
+
+  .mobileHamburgerIcon{
+    width:24px;
+  }
 }

@@ -8,31 +8,32 @@ import { fetchStockPrice, fetchStockNews } from "../../finnhubData/finnhubAPIFet
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore.jsx"
 
 function MainPage() {
-  const { state, dispatch } = useContext(FinnhubDataContext)
-  useEffect(() => {
-    fetchStockPrice(dispatch)
-    fetchStockNews(dispatch)
-  }, [dispatch])
+  // const { state, dispatch } = useContext(FinnhubDataContext)
+  // useEffect(() => {
+  //   fetchStockPrice(dispatch)
+  //   fetchStockNews(dispatch)
+  // }, [dispatch])
 
-  console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", (state.FinnhubDataContext));
+  // console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", (state.stockNewsState));
 
   return (
-    <div style={{ width: "100%", overflowX: "hidden" }}>
-      <section>
+    <div style={{ width: "100%", overflowX: "hidden", margin: "auto" }}>
+      <section >
         <MainNavBar />
       </section>
-      <section style={{ position: "relative" }}>
-        <Box className="MainPageBanner" sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", width: "100%" }}>
-          <Stack sx={{ alignItems: "flex-start", width: { xs: "42%", md: "33%", lg: "45%" } }}>
-            <Typography variant="body1" sx={{ textAlign: "left", fontSize: { xs: "18px", md: "27px", lg: "36px" }, fontWeight: { xs: "800" } }}>Invest Smart,</Typography>
-            <Typography variant="body1" sx={{ textAlign: "left", fontSize: { xs: "18px", md: "27px", lg: "36px" }, fontWeight: { xs: "800" } }}>Practice Smarter.</Typography>
-            <Typography variant="body1" sx={{ fontStyle: "italic", textAlign: "left", fontSize: { xs: "12px", md: "15px", lg: "18px" }, fontWeight: { xs: "600" } }}>
+      <section style={{ position: "relative", width: "100%", margin: "auto" }}>
+        <Box className="MainPageBanner" sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+          <Stack sx={{ alignItems: "flex-start", width: { xs: "42%", md: "33%", lg: "42%" } }}>
+            <Typography variant="body1" sx={{ fontFamily: "PT Serif Caption,sans-serif", textAlign: "left", fontSize: { xs: "18px", sm: "24px", md: "33px", lg: "42px" }, fontWeight: { xs: "800" } }}>Invest Smart,</Typography>
+            <Typography variant="body1" sx={{ fontFamily: "PT Serif Caption,sans-serif", textAlign: "left", fontSize: { xs: "18px", sm: "24px", md: "33px", lg: "42px" }, fontWeight: { xs: "800" } }}>Practice Smarter.</Typography>
+            <Typography variant="body1"
+              sx={{ fontFamily: "PT Serif Caption,sans-serif", fontStyle: "italic", textAlign: "left", fontSize: { xs: "12px", sm: "17px", md: "18px", lg: "21px" }, fontWeight: { xs: "600" } }}>
               Unleash your full investment potential —
               <Button
                 size="small"
                 sx={{
                   marginLeft: "2px",
-                  fontSize: { xs: "8px", md: "12px" }, borderRadius: "20px", backgroundColor: "#191919", color: "white",
+                  fontSize: { xs: "8px", sm: "12px", md: "12px" }, borderRadius: "20px", backgroundColor: "#191919", color: "white",
                   paddingX: "10px",
                   '&:hover': {
                     backgroundColor: "#666666"
@@ -42,10 +43,10 @@ function MainPage() {
           </Stack>
         </Box>
       </section>
-      <section className="MainPageBodyOne" style={{ width: "90%", margin: "auto" }}>
+      <section className="MainPageBodyOne-container" style={{ width: "90%", margin: "auto" }}>
         <MainPageBodyOne />
       </section>
-      <section className="MainPageBodyTwo" style={{ width: "90%", margin: "auto" }}>
+      <section className="MainPageBodyTwo-container" style={{ width: "90%", margin: "auto" }}>
         <MainPageBodyTwo />
       </section>
     </div>

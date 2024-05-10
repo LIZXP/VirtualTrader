@@ -6,6 +6,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import "../MainPage/MainPage.style.css"
 
 const pageNavMobile = [
   { name: "Stock Market", icon: <ShowChartIcon /> },
@@ -34,16 +35,16 @@ function MainNavBar() {
   return (
     <>
       <Box sx={{ display: { sm: "block", md: "none" } }}>
-        <Box className="mobileButtonsGroup" sx={{ width: '100%', height: '54px', backgroundColor: 'lightgrey', position: "fixed", zIndex: "99", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box className="mobileButtonsGroup" sx={{ width: '100%', height: { xs: '54px', sm: "84px" }, backgroundColor: 'lightgrey', position: "fixed", zIndex: "99", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box className="mobileNavBrand" sx={{ flexShrink: 0, marginLeft: "12px" }}>
-            <Typography variant="h6" fontFamily={"Rubik,sans-serif "} fontWeight={"800"}>VirtualTrader</Typography>
+            <Typography variant="h6" fontFamily={"Rubik,sans-serif "} fontWeight={"800"} sx={{ fontSize: { xs: "2rem", sm: "1.8rem" } }}>VirtualTrader</Typography>
           </Box>
           <Box className="mobileNavButtons" sx={{ marginRight: "12px" }}>
-            <Button className="mobileHamburgerMenu" sx={{ width: "48px", height: "48px" }} disableRipple={true} onClick={handleClick}
+            <Button className="mobileHamburgerMenu" sx={{ width: { xs: "48px", sm: "64px" }, height: { xs: "48px", sm: "64px" } }} disableRipple={true} onClick={handleClick}
               aria-controls={open ? 'mobile-dropDown-menu' : undefined}
             aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}>
-              <img src={MobileMenuIcon} style={{ width: "24px" }} />
+              <img className="mobileHamburgerIcon" src={MobileMenuIcon} />
             </Button>
           </Box>
         </Box>

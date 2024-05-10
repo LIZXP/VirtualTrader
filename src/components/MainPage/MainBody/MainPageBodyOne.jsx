@@ -1,20 +1,21 @@
 import { Box, Grid, Typography } from "@mui/material";
-import MainPageOneImg from "../../../assets/MainPageOneImg.svg"
+import mainPageVideo from "../../../assets/videos/enjoy_life_sea.mp4"
+import "../MainPage.style.css"
 
 function MainPageBodyOne() {
   return (
-    <Grid container spacing={0.5} sx={{ height: "100vh" }}>
-      <Grid item md={12} lg={5}>
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "flex-start" }}>
-          <Typography component="span" sx={{ fontSize: "1.8rem", fontWeight: "600", fontFamily: "Lato,sans-serif", textAlign: "left" }}>Grow fast,</Typography>
-          <Typography component="span" sx={{ fontSize: "1.9rem", fontWeight: "700", fontFamily: "Lato,sans-serif", textAlign: "left" }}>Invest smart,</Typography>
-          <Typography component="span" sx={{ fontSize: "2.0rem", fontWeight: "800", fontFamily: "Lato,sans-serif", textAlign: "left" }}>
-            Begin your trading journey with us.</Typography>
+    <Grid container spacing={0.5} sx={{ minHeight: { xs: "100vh", md: "80vh", lg: "100vh" }, margin: "auto", position: "relative", paddingTop: "30px" }}>
+      <Grid item xs={12} md={7}>
+        <Box sx={{ height: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "flex-start", paddingX: { lg: "80px", xl: "100px" }, paddingBottom: { xs: "60px", md: "0px" } }}>
+          <Typography component="span" sx={{ fontFamily: "PT Serif Caption,sans-serif", lineHeight: { lg: "60px" }, fontSize: { xs: "1.7rem", sm: "2.7rem", md: "2.7rem", lg: "3.3rem" }, fontWeight: "600", textAlign: { xs: "center", lg: "left" }, paddingBottom: "21px" }}>
+            Ease into Investing Grow Your Knowledge</Typography>
+          <Typography component="span" sx={{ fontFamily: "PT Serif Caption,sans-serif", fontSize: { xs: "0.8rem", sm: "1.3rem", md: "1.5rem", lg: "1.2rem" }, textAlign: "left" }}>
+            Explore market insights that pave the way to prosperity, And navigate towards a fulfilling future. Begin your enlightening path with us today.</Typography>
         </Box>
       </Grid>
-      <Grid item md={12} lg={7}>
-        <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {/* <img src={MainPageOneImg} style={{ width: "500px" }} /> */}
+      <Grid item xs={12} md={5} sx={{ height: "100%" }}>
+        <Box sx={{ height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'center', border: "none" }}>
+          <video className="mainPageOneVideo" src={mainPageVideo} autoPlay muted loop />
         </Box>
       </Grid>
     </Grid>
