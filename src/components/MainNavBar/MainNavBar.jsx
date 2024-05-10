@@ -7,22 +7,24 @@ import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import "../MainPage/MainPage.style.css"
+import { useNavigate } from "react-router-dom";
 
 const pageNavMobile = [
-  { name: "Stock Market", icon: <ShowChartIcon /> },
-  { name: "News", icon: <NewspaperIcon /> },
-  { name: "Support", icon: <SupportAgentIcon /> },
-  { name: "Login", icon: <AccountCircleIcon /> },
-  { name: "Get Started", icon: <StarBorderIcon /> }
+  { name: "Stock Market", icon: <ShowChartIcon />, path: "/" },
+  { name: "News", icon: <NewspaperIcon />, path: "/news" },
+  { name: "Support", icon: <SupportAgentIcon />, path: "/" },
+  { name: "Login", icon: <AccountCircleIcon />, path: "/" },
+  { name: "Get Started", icon: <StarBorderIcon />, path: "/" }
 ];
 
 const pageNavMain = [
-  { name: "Stock Market", icon: <ShowChartIcon /> },
-  { name: "News", icon: <NewspaperIcon /> },
-  { name: "Support", icon: <SupportAgentIcon /> }
+  { name: "Stock Market", icon: <ShowChartIcon />, path: "/" },
+  { name: "News", icon: <NewspaperIcon />, path: "/news" },
+  { name: "Support", icon: <SupportAgentIcon />, path: "/" }
 ];
 
 function MainNavBar() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -32,10 +34,15 @@ function MainNavBar() {
     setAnchorEl(null);
   };
 
+  const handleNavigate = (path) => {
+    handleClose();
+    navigate(path);
+  }
+
   return (
     <>
       <Box sx={{ display: { sm: "block", md: "none" } }}>
-        <Box className="mobileButtonsGroup" sx={{ width: '100%', height: { xs: '54px', sm: "84px" }, backgroundColor: 'lightgrey', position: "fixed", zIndex: "99", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box className="mobileButtonsGroup" sx={{ width: '100%', height: { xs: '54px', sm: "84px" }, backgroundColor: 'lightgrey', position: "fixed", top: "0", zIndex: "99", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box className="mobileNavBrand" sx={{ flexShrink: 0, marginLeft: "12px" }}>
             <Typography variant="h6" fontFamily={"Rubik,sans-serif "} fontWeight={"800"} sx={{ fontSize: { xs: "2rem", sm: "1.8rem" } }}>VirtualTrader</Typography>
           </Box>
@@ -59,7 +66,7 @@ function MainNavBar() {
           sx={{ marginLeft: '-24px' }}
         >
           {pageNavMobile.map((item, index) => (
-            <MenuItem key={index} onClick={handleClose} sx={{ paddingLeft: "20px", minHeight: "48px" }}>
+            <MenuItem key={index} onClick={() => { handleNavigate(item.path) }} sx={{ paddingLeft: "20px", minHeight: "48px" }}>
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
@@ -68,13 +75,14 @@ function MainNavBar() {
           ))}
         </Menu>
       </Box>
-      <Box className="mainpageNavBar" sx={{ width: "100%", display: { xs: "none", md: "block" }, position: "fixed", backgroundColor: "whitesmoke", zIndex: 99 }}>
+      <Box className="mainpageNavBar" sx={{ width: "100%", display: { xs: "none", md: "block" }, position: "fixed", top: "0", backgroundColor: "whitesmoke", zIndex: 99 }}>
         <Grid container spacing={0}>
           <Grid item sx={{ height: "42px", margin: "0 auto" }} md={10} lg={8}>
             <Box className="mainpageNavBarRowOne" sx={{ height: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 10px" }}>
               <Typography variant="h6" fontFamily={"Rubik,sans-serif "} fontWeight={"800"}>VirtualTrader</Typography>
               <Stack direction={"row"}>
                 <Button
+                  onClick={() => { handleNavigate("/login") }}
                   sx={{
                     fontWeight: "700",
                     color: "#242424",
@@ -83,7 +91,9 @@ function MainNavBar() {
                       color: "white"
                     }
                   }}>Log In</Button>
-                <Button sx={{
+                <Button
+                  onClick={() => { handleNavigate("/signup") }}
+                  sx={{
                   borderRadius: "20px", backgroundColor: "#191919", color: "white",
                   paddingX: "10px",
                   '&:hover': {
@@ -110,6 +120,7 @@ function MainNavBar() {
                       color: "white"
                     }
                   }}
+                  onClick={() => { handleNavigate(item.path) }}
                   startIcon={item.icon}
                 >{item.name}
                 </Button>

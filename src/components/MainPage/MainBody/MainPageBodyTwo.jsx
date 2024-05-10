@@ -25,7 +25,7 @@ const stackBorderStyle = {
 
 function MainPageBodyTwo() {
     return (
-        <Grid container spacing={0.5} sx={{ minHeight: "80vh", width: "90%", margin: "auto", position: "relative", paddingTop: { xs: "5%", md: "0", lg: "10%" } }}>
+        <Grid container spacing={0.5} sx={{ minHeight: "80vh", margin: "auto", position: "relative", paddingX: { lg: "80px" }, paddingTop: { xs: "5%", md: "0", lg: "10%" } }}>
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', width: { xs: "100%", md: "50%", lg: "60%" } }}>
                     <Typography component="span" sx={{ lineHeight: "60px", fontSize: { xs: "2.8rem", lg: "3.9rem" }, ...baseTypographyStyle, textAlign: "left" }}>

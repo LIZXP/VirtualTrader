@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import MainNavBar from "../MainNavBar/MainNavBar";
 import MainPageBodyOne from "./MainBody/MainPageBodyOne";
 import MainPageBodyTwo from "./MainBody/MainPageBodyTwo";
 import "./MainPage.style.css"
 import { fetchStockPrice, fetchStockNews } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch"
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore.jsx"
+import { useNavigate } from "react-router-dom";
 
 function MainPage() {
   // const { state, dispatch } = useContext(FinnhubDataContext)
@@ -15,12 +15,12 @@ function MainPage() {
   // }, [dispatch])
 
   // console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", (state.stockNewsState));
-
+  const navigate = useNavigate();
+  const handleNavigate = (path) => {
+    navigate(path);
+  }
   return (
     <div style={{ width: "100%", overflowX: "hidden", margin: "auto" }}>
-      <section >
-        <MainNavBar />
-      </section>
       <section style={{ position: "relative", width: "100%", margin: "auto" }}>
         <Box className="MainPageBanner" sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <Stack sx={{ alignItems: "flex-start", width: { xs: "42%", md: "33%", lg: "42%" } }}>
@@ -31,6 +31,7 @@ function MainPage() {
               Unleash your full investment potential —
               <Button
                 size="small"
+                onClick={() => { handleNavigate("/signup") }}
                 sx={{
                   marginLeft: "2px",
                   fontSize: { xs: "8px", sm: "12px", md: "12px" }, borderRadius: "20px", backgroundColor: "#191919", color: "white",
