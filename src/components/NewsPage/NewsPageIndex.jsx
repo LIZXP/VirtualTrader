@@ -1,11 +1,13 @@
-import { Box, Card, Grid, Stack, Typography } from "@mui/material"
-import { useContext, useEffect } from "react"
+import { Card, Grid, Stack, Typography } from "@mui/material"
+import { useContext, useEffect, useState } from "react"
 import { fetchCompanyNews, fetchStockNews } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch"
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore"
+import { stocksSymbols } from "../../finnhubData/finnhubAPIFetching/stockSymbols"
 
 
 function NewsPageIndex() {
     const { state, dispatch } = useContext(FinnhubDataContext)
+    const [companyNewsFetched, setCompanyNewsFetched] = useState(false);
     useEffect(() => {
         if (!state.stockNewsState.lastUpdate || shouldFetchNews(state.stockNewsState.lastUpdate)) {
             fetchStockNews(dispatch);
@@ -14,7 +16,9 @@ function NewsPageIndex() {
 
     useEffect(() => {
         if (!state.companyNewsState.lastUpdate || shouldFetchNews(state.companyNewsState.lastUpdate)) {
-            fetchCompanyNews(dispatch);
+            fetchCompanyNews(dispatch).then(() => setCompanyNewsFetched(true));
+        } else {
+            setCompanyNewsFetched(true);
         }
     }, [state.companyNewsState.lastUpdate, dispatch]);
 
@@ -40,7 +44,32 @@ function NewsPageIndex() {
         }
     };
 
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", state);
+    const topCompanyNews = () => {
+        if (companyNewsFetched && state.companyNewsState.companyNews) {
+            if (Object.keys(state.companyNewsState.companyNews).length > 0) {
+                return stocksSymbols.filter((symbol, i) => i < 3).map((symbol, i) => (
+                    <Card key={i} sx={{ marginBottom: "20px" }}>
+                        <Typography sx={{ width: "95%", height: "2rem", padding: "10px 0 0 6px", fontWeight: "600" }}>{symbol.name}</Typography>
+                        {state.companyNewsState.companyNews[symbol.name] && state.companyNewsState.companyNews[symbol.name].slice(0, 5).map((companyNews, j) => (
+                            <Grid container key={j} sx={{ width: "95%", marginX: "auto", borderTop: "grey solid 1px", paddingY: "10px" }} spacing={0.5}>
+                                <Grid item xs={12}>
+                                    <Stack direction={"row"}>
+                                        <Typography sx={{ fontSize: "0.8rem" }}>Source: {companyNews.source}</Typography>
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography sx={{ fontSize: { xs: "0.85rem", sm: "1.2rem", md: "1.20rem", lg: "1.5rem", xl: "1.6rem" }, fontWeight: "600", paddingRight: "5px" }}>{companyNews.headline}</Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography sx={{ fontSize: { xs: "0.6rem", sm: "0.8rem", md: "0.9rem" }, fontWeight: "500", textAlign: "right" }}>{getTimeAgo(companyNews.datetime)}</Typography>
+                                </Grid>
+                            </Grid>
+                        ))}
+                    </Card>
+                ));
+            }
+        }
+    };
 
     return (
         <Grid container spacing={2} sx={{ minHeight: "100%", width: "90%", marginX: "auto", marginTop: { xs: "54px", sm: "84px" }, borderRadius: "25px" }}>
@@ -72,17 +101,7 @@ function NewsPageIndex() {
                 </Card>
             </Grid>
             <Grid item xs={12} md={5} >
-                <Grid container>
-                    <Grid item>
-
-                    </Grid>
-                    <Grid item>
-
-                    </Grid>
-                    <Grid item>
-
-                    </Grid>
-                </Grid>
+                {topCompanyNews()}
             </Grid>
         </Grid>
     )
