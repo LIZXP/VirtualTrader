@@ -1,5 +1,6 @@
 import stockPriceReducer from "./reducers/stockPriceReducer"
 import stockNewsReducer from "./reducers/stockNewsReducer"
+import companyNewsReducer from "./reducers/companyNewsReducer"
 
 function combineReducers(reducers) {
     return (state, action) => {
@@ -15,7 +16,8 @@ function combineReducers(reducers) {
 
 const rootReducer = combineReducers({
     stockPriceState: stockPriceReducer,
-    stockNewsState: stockNewsReducer
+    stockNewsState: stockNewsReducer,
+    companyNewsState: companyNewsReducer
 });
 
 export default rootReducer

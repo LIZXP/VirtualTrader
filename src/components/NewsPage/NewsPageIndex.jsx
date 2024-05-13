@@ -1,16 +1,22 @@
 import { Box, Card, Grid, Stack, Typography } from "@mui/material"
 import { useContext, useEffect } from "react"
-import { fetchStockNews } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch"
+import { fetchCompanyNews, fetchStockNews } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch"
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore"
 
 
 function NewsPageIndex() {
     const { state, dispatch } = useContext(FinnhubDataContext)
     useEffect(() => {
-        if (state.stockNewsState.stockNews.length === 0 || (!state.stockNewsState.lastUpdate || shouldFetchNews(state.stockNewsState.lastUpdate))) {
-            fetchStockNews(dispatch)
+        if (!state.stockNewsState.lastUpdate || shouldFetchNews(state.stockNewsState.lastUpdate)) {
+            fetchStockNews(dispatch);
         }
-    }, [state.stockNewsState.stockNews.length, state.stockNewsState.lastUpdate, dispatch])
+    }, [state.stockNewsState.lastUpdate, dispatch]);
+
+    useEffect(() => {
+        if (!state.companyNewsState.lastUpdate || shouldFetchNews(state.companyNewsState.lastUpdate)) {
+            fetchCompanyNews(dispatch);
+        }
+    }, [state.companyNewsState.lastUpdate, dispatch]);
 
     const shouldFetchNews = (lastUpdate) => {
         const lastUpdateTime = new Date(lastUpdate).getTime();
@@ -21,9 +27,9 @@ function NewsPageIndex() {
     }
 
     const getTimeAgo = (timestamp) => {
-        const timePublished = new Date(timestamp * 1000); // Convert Unix timestamp to JavaScript Date
+        const timePublished = new Date(timestamp * 1000);
         const timeNow = new Date();
-        const difference = timeNow - timePublished; // Difference in milliseconds
+        const difference = timeNow - timePublished;
         const minutesAgo = Math.floor(difference / 60000);
         const hoursAgo = Math.floor(minutesAgo / 60);
 
@@ -34,7 +40,7 @@ function NewsPageIndex() {
         }
     };
 
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", state.stockNewsState);
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", state);
 
     return (
         <Grid container spacing={2} sx={{ minHeight: "100%", width: "90%", marginX: "auto", marginTop: { xs: "54px", sm: "84px" }, borderRadius: "25px" }}>

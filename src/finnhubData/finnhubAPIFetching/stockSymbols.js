@@ -3,10 +3,10 @@ export const stocksSymbols = [
         name: "AAPL",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Apple_Computer_Logo_rainbow.svg/879px-Apple_Computer_Logo_rainbow.svg.png",
     },
-    // {
-    //     name: "META",
-    //     img: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/meta-icon.png",
-    // },
+    {
+        name: "META",
+        img: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/meta-icon.png",
+    },
     // {
     //     name: "GOOGL",
     //     img: "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
