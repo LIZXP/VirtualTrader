@@ -6,7 +6,7 @@ function MainPageLayout({ children }) {
             <section>
                 <MainNavBar />
             </section>
-            <section >
+            <section>
                 {children}
             </section>
         </>

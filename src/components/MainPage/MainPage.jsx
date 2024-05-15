@@ -3,18 +3,13 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import MainPageBodyOne from "./MainBody/MainPageBodyOne";
 import MainPageBodyTwo from "./MainBody/MainPageBodyTwo";
 import "./MainPage.style.css"
-import { fetchStockPrice, fetchStockNews } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch"
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore.jsx"
 import { useNavigate } from "react-router-dom";
+import { fetchAndStoreStockData } from "../../../netlify/functions/fetch-stock-data.js";
+import { fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch.js";
 
 function MainPage() {
-  // const { state, dispatch } = useContext(FinnhubDataContext)
-  // useEffect(() => {
-  //   fetchStockPrice(dispatch)
-  //   fetchStockNews(dispatch)
-  // }, [dispatch])
 
-  // console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", (state.stockNewsState));
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     navigate(path);

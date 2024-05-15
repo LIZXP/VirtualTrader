@@ -17,8 +17,6 @@ function NewsPageIndex() {
     useEffect(() => {
         if (!state.companyNewsState.lastUpdate || shouldFetchNews(state.companyNewsState.lastUpdate)) {
             fetchCompanyNews(dispatch).then(() => setCompanyNewsFetched(true));
-        } else {
-            setCompanyNewsFetched(true);
         }
     }, [state.companyNewsState.lastUpdate, dispatch]);
 

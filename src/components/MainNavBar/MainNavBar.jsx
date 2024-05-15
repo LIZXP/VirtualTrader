@@ -10,15 +10,15 @@ import "../MainPage/MainPage.style.css"
 import { useNavigate } from "react-router-dom";
 
 const pageNavMobile = [
-  { name: "Stock Market", icon: <ShowChartIcon />, path: "/" },
+  { name: "Stock Market", icon: <ShowChartIcon />, path: "/stockmarket" },
   { name: "News", icon: <NewspaperIcon />, path: "/news" },
   { name: "Support", icon: <SupportAgentIcon />, path: "/" },
-  { name: "Login", icon: <AccountCircleIcon />, path: "/" },
-  { name: "Get Started", icon: <StarBorderIcon />, path: "/" }
+  { name: "Login", icon: <AccountCircleIcon />, path: "/login" },
+  { name: "Get Started", icon: <StarBorderIcon />, path: "/signup" }
 ];
 
 const pageNavMain = [
-  { name: "Stock Market", icon: <ShowChartIcon />, path: "/" },
+  { name: "Stock Market", icon: <ShowChartIcon />, path: "/stockmarket" },
   { name: "News", icon: <NewspaperIcon />, path: "/news" },
   { name: "Support", icon: <SupportAgentIcon />, path: "/" }
 ];
