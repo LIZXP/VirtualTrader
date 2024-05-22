@@ -2,46 +2,49 @@ import axios from 'axios';
 import { db } from '../../src/firebase/firebaseConfig';
 import { collection, doc, setDoc } from "firebase/firestore";
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
+import moment from 'moment';
 
-// export async function fetchAndStoreStockData() {
-//     try {
-//         const alphavantage_API_KEY = import.meta.env.VITE_ALPHA_VANTAGE_API_KEY;
+export async function fetchAndStoreStockData() {
+    try {
+        const finnhub_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
 
-//         const fetchAndEachStoreStockdata = async (stock) => {
-//             try {
-//                 // const response = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock}&outputsize=full&apikey=${alphavantage_API_KEY}`);
-//                 const response = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&outputsize=full&apikey=demo`);
-//                 const data = response.data;
-//                 const metaData = data["Meta Data"];
-//                 const timeSeriesData = data["Time Series (Daily)"];
-//                 const stockName = metaData["2. Symbol"];
+        const fetchAndEachStoreStockdata = async (stock) => {
+            let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
+            let fiveDigitString = randomFiveDigitNumber.toString().padStart(5, '0');
+            let sixDigitString = '1' + fiveDigitString;
 
-//                 const stockDocRef = doc(db, 'stockPrice', stockName);
-//                 const dateCollectionRef = collection(stockDocRef, 'historical');
+            try {
+                const response = await axios.get(`https://finnhub.io/api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`);
+                const data = response.data;
 
-//                 for (const date in timeSeriesData) {
-//                     const stockData = timeSeriesData[date];
-//                     const dateDocRef = doc(dateCollectionRef, date);
+                const date = moment.unix(data.t).format("YYYY-MM-DD");
 
-//                     await setDoc(dateDocRef, {
-//                         open: stockData["1. open"],
-//                         high: stockData["2. high"],
-//                         low: stockData["3. low"],
-//                         close: stockData["4. close"],
-//                         volume: stockData["5. volume"]
-//                     });
-//                 }
-//                 console.log('Data successfully stored in Firebase for', stockName);
-//             } catch (error) {
-//                 console.error('Error in fetching or storing data for', stock, ':', error);
-//             }
-//         }
+                console.log(data, date);
+                const stockDocRef = doc(db, 'stockPrice', stock);
+                const dateCollectionRef = collection(stockDocRef, 'historical');
+                const dateDocRef = doc(dateCollectionRef, date);
 
-//         const allOperations = stocksSymbols.map(ssbol => fetchAndEachStoreStockdata(ssbol.name));
+                await setDoc(dateDocRef, {
+                    open: data.o,
+                    high: data.h,
+                    low: data.l,
+                    close: data.c,
+                    volume: sixDigitString
+                });
 
-//         await Promise.all(allOperations);
-//         console.log("All operations completed.");
-//     } catch (error) {
-//         console.error('Error fetching or storing data:', error);
-//     }
-// }
+                console.log('Data successfully stored in Firebase for', stock);
+            } catch (error) {
+                console.error('Error in fetching or storing data for', stock, ':', error);
+            }
+        };
+
+        const allOperations = stocksSymbols.map(stock => fetchAndEachStoreStockdata(stock.name));
+
+        await Promise.all(allOperations);
+        console.log("All operations completed.");
+    } catch (error) {
+        console.error('Error fetching or storing data:', error);
+    }
+}
+
+fetchAndStoreStockData();
