@@ -5,7 +5,6 @@ import MainPageBodyTwo from "./MainBody/MainPageBodyTwo";
 import "./MainPage.style.css"
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore.jsx"
 import { useNavigate } from "react-router-dom";
-import { fetchAndStoreStockData } from "../../../netlify/functions/fetch-stock-data.js";
 import { fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch.js";
 
 function MainPage() {

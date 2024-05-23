@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Button, FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography, Link } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Image from "../../assets/image.png";
+import AuthPicture from "../../assets/AuthPicture.svg";
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -15,15 +15,20 @@ const SignUpPage = () => {
     return (
         <Box display="flex" height="100vh">
             <Box
-                flexGrow={1}
+                flex="1 1 50%"
                 display={{ xs: 'none', md: 'flex' }}
                 justifyContent="center"
                 alignItems="center"
                 bgcolor="#E9E9E9"
             >
-                <img src={Image} alt="" style={{ width: '400px' }} />
+                <img src={AuthPicture} alt="" style={{ width: '400px' }} />
             </Box>
-            <Box flexGrow={1} display="flex" justifyContent="center" alignItems="center">
+            <Box
+                flex={{ xs: '1 1 100%', md: '1 1 50%' }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
                 <Box width="80%" mx="auto" display="flex" flexDirection="column" justifyContent="center" height="100%">
                     <Box textAlign="center" mb={4}>
                         <Typography variant="h2" component="h2" gutterBottom>

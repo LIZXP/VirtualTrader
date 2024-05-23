@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, InputAdornment, InputLabel, OutlinedInput, TextField, Typography, Link } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import Image from "../../assets/image.png";
+import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
+import AuthPicture from "../../assets/AuthPicture.svg";
 import GoogleSvg from "../../assets/googleIcon.svg";
 
 const LoginPage = () => {
@@ -20,7 +21,7 @@ const LoginPage = () => {
                 alignItems="center"
                 bgcolor="#E9E9E9"
             >
-                <img src={Image} alt="" style={{ width: '400px' }} />
+                <img src={AuthPicture} alt="" style={{ width: '400px' }} />
             </Box>
             <Box flexGrow={1} display="flex" justifyContent="center" alignItems="center">
                 <Box width="80%" mx="auto" display="flex" flexDirection="column" justifyContent="center" height="100%">
@@ -57,12 +58,12 @@ const LoginPage = () => {
                                 label="Password"
                             />
                         </FormControl>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        {/* <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                             <FormControlLabel control={<Checkbox />} label="Remember for 30 days" />
                             <Link href="#" underline="hover" variant="body2">
                                 Forgot password?
                             </Link>
-                        </Box>
+                        </Box> */}
                         <Box display="flex" flexDirection="column" gap={2} mb={2}>
                             <Button fullWidth variant="contained" color="primary">
                                 Log In
@@ -77,7 +78,7 @@ const LoginPage = () => {
                         </Box>
                     </form>
                     <Typography textAlign="center" variant="body2">
-                        Don’t have an account? <Link href="#">Sign Up</Link>
+                        Don’t have an account? <Link component={RouterLink} to="/signup">Sign Up</Link>
                     </Typography>
                 </Box>
             </Box>
