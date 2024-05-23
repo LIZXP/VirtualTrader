@@ -6,6 +6,15 @@ import moment from 'moment';
 
 export async function fetchAndStoreStockData() {
     try {
+        const currentDate = moment();
+        const startDate = moment('2024-05-22')
+        const endDate = moment('2025-06-01')
+
+        if (!currentDate.isBetween(startDate, endDate, undefined, '[]')) {
+            console.log('Current date is outside the desired range. Exiting function.');
+            return;
+        }
+
         const finnhub_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
 
         const fetchAndEachStoreStockdata = async (stock) => {
@@ -19,7 +28,6 @@ export async function fetchAndStoreStockData() {
 
                 const date = moment.unix(data.t).format("YYYY-MM-DD");
 
-                console.log(data, date);
                 const stockDocRef = doc(db, 'stockPrice', stock);
                 const dateCollectionRef = collection(stockDocRef, 'historical');
                 const dateDocRef = doc(dateCollectionRef, date);

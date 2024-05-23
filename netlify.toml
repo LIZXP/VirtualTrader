@@ -7,14 +7,3 @@
 
 [functions.schedule-fetch-stock-data]
   schedule = "0 10 * * *"
-
-[env]
-  VITE_FIRESTORE_API_KEY = "AIzaSyBF3eeZJmlmyj6GukUhS-KCbrXpVtSREmY"
-  VITE_FIRESTORE_AUTH_DOMAIN = "virtualtrader-74e0f.firebaseapp.com"
-  VITE_FIRESTORE_PROJECT_ID = "virtualtrader-74e0f"
-  VITE_FIRESTORE_STORAGE_BUCKET = "virtualtrader-74e0f.appspot.com"
-  VITE_FIRESTORE_MESSAGING_SENDER_ID = "809693147611"
-  VITE_FIRESTORE_APP_ID = "1:809693147611:web:32e633e89c669979deb7fe"
-  VITE_FIRESTORE_MEASUREMENT_ID = "G-20HLDWZDRQ"
-  VITE_FINNHUB_API_KEY = "cotqkvpr01qr7r8ge7o0cotqkvpr01qr7r8ge7og"
-  VITE_ALPHA_VANTAGE_API_KEY = "DDRFT6G60BOMYTHF"
