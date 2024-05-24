@@ -1,21 +1,24 @@
 import axios from 'axios';
 import { db } from '../../src/firebase/firebaseConfig';
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
 import moment from 'moment';
 
-export async function fetchAndStoreStockData() {
+export default async (req, context) => {
+    console.log('Starting fetchAndStoreStockData function');
     try {
         const currentDate = moment();
-        const startDate = moment('2024-05-22')
-        const endDate = moment('2025-06-01')
+        const startDate = moment('2024-05-22');
+        const endDate = moment('2025-06-01');
 
         if (!currentDate.isBetween(startDate, endDate, undefined, '[]')) {
             console.log('Current date is outside the desired range. Exiting function.');
-            return;
+            return new Response(JSON.stringify({ message: 'Current date is outside the desired range.' }), {
+                status: 200,
+            });
         }
 
-        const finnhub_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
+        const finnhub_API_KEY = Netlify.env.get('VITE_FINNHUB_API_KEY');
 
         const fetchAndEachStoreStockdata = async (stock) => {
             let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
@@ -23,10 +26,12 @@ export async function fetchAndStoreStockData() {
             let sixDigitString = '1' + fiveDigitString;
 
             try {
-                const response = await axios.get(`https://finnhub.io/api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`);
+                const response = await axios.get(
+                    `https://finnhub.io/api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`
+                );
                 const data = response.data;
 
-                const date = moment.unix(data.t).format("YYYY-MM-DD");
+                const date = moment.unix(data.t).format('YYYY-MM-DD');
 
                 const stockDocRef = doc(db, 'stockPrice', stock);
                 const dateCollectionRef = collection(stockDocRef, 'historical');
@@ -37,7 +42,7 @@ export async function fetchAndStoreStockData() {
                     high: data.h,
                     low: data.l,
                     close: data.c,
-                    volume: sixDigitString
+                    volume: sixDigitString,
                 });
 
                 console.log('Data successfully stored in Firebase for', stock);
@@ -46,13 +51,18 @@ export async function fetchAndStoreStockData() {
             }
         };
 
-        const allOperations = stocksSymbols.map(stock => fetchAndEachStoreStockdata(stock.name));
+        const allOperations = stocksSymbols.map((stock) => fetchAndEachStoreStockdata(stock.name));
 
         await Promise.all(allOperations);
-        console.log("All operations completed.");
+        console.log('All operations completed.');
+
+        return new Response(JSON.stringify({ message: 'All operations completed.' }), {
+            status: 200,
+        });
     } catch (error) {
         console.error('Error fetching or storing data:', error);
+        return new Response(JSON.stringify({ error: 'Error fetching or storing data', details: error.message }), {
+            status: 500,
+        });
     }
-}
-
-fetchAndStoreStockData();
+};
