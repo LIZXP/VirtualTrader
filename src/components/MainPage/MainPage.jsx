@@ -13,6 +13,7 @@ function MainPage() {
   const handleNavigate = (path) => {
     navigate(path);
   }
+
   return (
     <div style={{ width: "100%", overflowX: "hidden", margin: "auto" }}>
       <section style={{ position: "relative", width: "100%", margin: "auto" }}>

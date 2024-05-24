@@ -4,29 +4,56 @@ import { fetchCompanyNews, fetchStockNews } from "../../finnhubData/finnhubAPIFe
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore"
 import { stocksSymbols } from "../../finnhubData/finnhubAPIFetching/stockSymbols"
 
+let stockNCompanyNewsIntervalId = null;
 
 function NewsPageIndex() {
     const { state, dispatch } = useContext(FinnhubDataContext)
-    const [companyNewsFetched, setCompanyNewsFetched] = useState(false);
-    useEffect(() => {
-        if (!state.stockNewsState.lastUpdate || shouldFetchNews(state.stockNewsState.lastUpdate)) {
-            fetchStockNews(dispatch);
-        }
-    }, [state.stockNewsState.lastUpdate, dispatch]);
+    const [fetchedOnce, setFetchedOnce] = useState(false);
+    const timeToFetchNews = () => {
+        const stockNewsFetchedTime = JSON.parse(sessionStorage.getItem("stockNewsFetchedTime"));
+        const companyNewsFetchedTime = JSON.parse(sessionStorage.getItem("companyNewsFetchedTime"));
+        const currentTime = Date.now();
+        const oneHour = 3600000;
+
+        return (
+            !stockNewsFetchedTime ||
+            !companyNewsFetchedTime ||
+            currentTime - stockNewsFetchedTime > oneHour ||
+            currentTime - companyNewsFetchedTime > oneHour
+        );
+    };
 
     useEffect(() => {
-        if (!state.companyNewsState.lastUpdate || shouldFetchNews(state.companyNewsState.lastUpdate)) {
-            fetchCompanyNews(dispatch).then(() => setCompanyNewsFetched(true));
+        const fetchNews = async () => {
+            const shouldFetch = timeToFetchNews() || !state.companyNewsState?.companyNews || Object.keys(state.companyNewsState.companyNews).length === 0 || !state.stockNewsState?.stockNews || state.stockNewsState.stockNews.length === 0;
+
+            if (shouldFetch && !fetchedOnce) {
+                await fetchStockNews(dispatch);
+                await fetchCompanyNews(dispatch);
+                const currentTime = Date.now();
+                sessionStorage.setItem("stockNewsFetchedTime", JSON.stringify(currentTime));
+                sessionStorage.setItem("companyNewsFetchedTime", JSON.stringify(currentTime));
+                setFetchedOnce(true);
+            }
+        };
+
+        fetchNews();
+
+        if (!stockNCompanyNewsIntervalId) {
+            stockNCompanyNewsIntervalId = setInterval(() => {
+                fetchStockNews(dispatch);
+                fetchCompanyNews(dispatch);
+                const currentTime = Date.now();
+                sessionStorage.setItem("stockNewsFetchedTime", JSON.stringify(currentTime));
+                sessionStorage.setItem("companyNewsFetchedTime", JSON.stringify(currentTime));
+            }, 720000);
         }
-    }, [state.companyNewsState.lastUpdate, dispatch]);
 
-    const shouldFetchNews = (lastUpdate) => {
-        const lastUpdateTime = new Date(lastUpdate).getTime();
-        const currentTime = new Date().getTime();
-
-        const oneMin = 10 * 60 * 1000;
-        return (currentTime - lastUpdateTime > oneMin);
-    }
+        return () => {
+            clearInterval(stockNCompanyNewsIntervalId);
+            stockNCompanyNewsIntervalId = null;
+        };
+    }, [dispatch, state.companyNewsState.companyNews, state.stockNewsState.stockNews, fetchedOnce]);
 
     const getTimeAgo = (timestamp) => {
         const timePublished = new Date(timestamp * 1000);
@@ -43,7 +70,7 @@ function NewsPageIndex() {
     };
 
     const topCompanyNews = () => {
-        if (companyNewsFetched && state.companyNewsState.companyNews) {
+        if (state.companyNewsState.companyNews) {
             if (Object.keys(state.companyNewsState.companyNews).length > 0) {
                 return stocksSymbols.filter((symbol, i) => i < 3).map((symbol, i) => (
                     <Card key={i} sx={{ marginBottom: "20px" }}>
@@ -56,7 +83,7 @@ function NewsPageIndex() {
                                     </Stack>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography sx={{ fontSize: { xs: "0.85rem", sm: "1.2rem", md: "1.20rem", lg: "1.5rem", xl: "1.6rem" }, fontWeight: "600", paddingRight: "5px" }}>{companyNews.headline}</Typography>
+                                    <Typography sx={{ fontSize: { xs: "0.85rem", sm: "1.2rem", md: "1.20rem", lg: "1.5rem", xl: "1.6rem" }, fontWeight: "600", paddingRight: "5px" }}><a target="_blank" rel="noopener noreferrer" href={companyNews.url}>{companyNews.headline}</a></Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography sx={{ fontSize: { xs: "0.6rem", sm: "0.8rem", md: "0.9rem" }, fontWeight: "500", textAlign: "right" }}>{getTimeAgo(companyNews.datetime)}</Typography>
@@ -68,7 +95,7 @@ function NewsPageIndex() {
             }
         }
     };
-
+    console.log(state);
     return (
         <Grid container spacing={2} sx={{ minHeight: "100%", width: "90%", marginX: "auto", marginTop: { xs: "54px", sm: "84px" }, borderRadius: "25px" }}>
             <Grid item xs={12} md={7} sx={{ height: "100%" }}>
@@ -84,7 +111,7 @@ function NewsPageIndex() {
                                 </Stack>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography sx={{ fontSize: { xs: "0.85rem", sm: "1.2rem", md: "1.20rem", lg: "1.5rem", xl: "1.6rem" }, fontWeight: "600", paddingRight: "5px" }} >{news.headline}</Typography>
+                                <Typography sx={{ fontSize: { xs: "0.85rem", sm: "1.2rem", md: "1.20rem", lg: "1.5rem", xl: "1.6rem" }, fontWeight: "600", paddingRight: "5px" }} ><a href={news.url} target="_blank" rel="noopener noreferrer">{news.headline}</a></Typography>
                             </Grid>
                             <Grid item xs={4} sx={{ flexShrink: 0 }}>
                                 <img src={news.image} alt="News" style={{ width: "100%", borderRadius: "10px" }} />

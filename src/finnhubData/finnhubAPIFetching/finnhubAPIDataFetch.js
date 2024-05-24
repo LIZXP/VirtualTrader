@@ -27,7 +27,6 @@ export const fetchStockPrice = async (dispatch) => {
                 dispatch(setStockPrice(completeData.filter(data => data !== undefined)))
             })
             .catch(e => console.error('Error resolving stock prices:', e))
-
     } catch (error) {
         console.error('Failed to fetch stock prices:', error);
     }
@@ -59,7 +58,7 @@ export const fetchCompanyNews = async (dispatch) => {
                     return { [stock.name]: { error: 'Failed to fetch data', details: e } };
                 })
         }
-        const allStockPriceData = stocksSymbols.map(ssymb => getCompanyNewsData(ssymb));
+        const allStockPriceData = stocksSymbols.slice(0, 3).map(ssymb => getCompanyNewsData(ssymb));
 
         Promise.all(allStockPriceData)
             .then(completeData => {
