@@ -3,6 +3,7 @@ import { db } from '../../src/firebase/firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
 import moment from 'moment';
+import type { Config } from "@netlify/functions";
 
 export default async (req, context) => {
     console.log('Starting fetchAndStoreStockData function');
@@ -18,7 +19,7 @@ export default async (req, context) => {
             });
         }
 
-        const finnhub_API_KEY = Netlify.env.get('VITE_FINNHUB_API_KEY');
+        const finnhub_API_KEY = process.env.VITE_FINNHUB_API_KEY;
 
         const fetchAndEachStoreStockdata = async (stock) => {
             let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
@@ -65,4 +66,8 @@ export default async (req, context) => {
             status: 500,
         });
     }
+};
+
+export const config: Config = {
+    schedule: "0 10 * * *"
 };
