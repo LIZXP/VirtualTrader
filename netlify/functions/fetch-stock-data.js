@@ -3,9 +3,8 @@ import { db } from '../../src/firebase/firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
 import moment from 'moment';
-import type { Config } from "@netlify/functions";
 
-export default async (req, context) => {
+export default async (req) => {
     console.log('Starting fetchAndStoreStockData function');
     try {
         const currentDate = moment();
@@ -66,8 +65,4 @@ export default async (req, context) => {
             status: 500,
         });
     }
-};
-
-export const config: Config = {
-    schedule: "0 10 * * *"
 };
