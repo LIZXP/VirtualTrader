@@ -19,6 +19,17 @@ export default async (req) => {
         }
 
         const finnhub_API_KEY = process.env.VITE_FINNHUB_API_KEY;
+        const firestore_API_KEY = process.env.VITE_FIRESTORE_API_KEY;
+        const firestore_AUTH_DOMAIN = process.env.VITE_FIRESTORE_AUTH_DOMAIN;
+        const firestore_PROJECT_ID = process.env.VITE_FIRESTORE_PROJECT_ID;
+        const firestore_STORAGE_BUCKET = process.env.VITE_FIRESTORE_STORAGE_BUCKET;
+        const firestore_MESSAGING_SENDER_ID = process.env.VITE_FIRESTORE_MESSAGING_SENDER_ID;
+        const firestore_APP_ID = process.env.VITE_FIRESTORE_APP_ID;
+        const firestore_MEASUREMENT_ID = process.env.VITE_FIRESTORE_MEASUREMENT_ID;
+
+        if (!finnhub_API_KEY || !firestore_API_KEY) {
+            throw new Error('Environment variables are not defined');
+        }
 
         const fetchAndEachStoreStockdata = async (stock) => {
             let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
