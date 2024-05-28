@@ -10,7 +10,7 @@ import { fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPI
 function MainPage() {
 
   useEffect(() => {
-    const finnhub_API_KEY = process.env.VITE_FINNHUB_API_KEY;
+    const finnhub_API_KEY = process.env.FINNHUB_API_KEY;
     console.log(finnhub_API_KEY);
   })
 
