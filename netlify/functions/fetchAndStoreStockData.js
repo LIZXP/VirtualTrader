@@ -42,6 +42,8 @@ export default async (req) => {
                 );
                 const data = response.data;
 
+                console.log(response.data); //<-------------here
+
                 const date = moment.unix(data.t).format('YYYY-MM-DD');
 
                 const stockDocRef = doc(db, 'stockPrice', stock);
