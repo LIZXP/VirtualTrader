@@ -6,4 +6,4 @@
   directory = "netlify/functions"
 
 [functions."fetchAndStoreStockData"]
-  schedule = "0 10 * * *"
+  schedule = "@hourly"
