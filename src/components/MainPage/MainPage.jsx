@@ -9,14 +9,6 @@ import { fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPI
 
 function MainPage() {
 
-  useEffect(() => {
-    const finnhub_API_KEY = process.env.FINNHUB_API_KEY;
-    const finnhub_API_KEY_Viteversion = import.meta.env.FINNHUB_API_KEY
-    const tryagain = import.meta.env.VITE_FIRESTORE_API_KEY
-    console.log(finnhub_API_KEY, tryagain, finnhub_API_KEY_Viteversion);
-  })
-
-
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     navigate(path);

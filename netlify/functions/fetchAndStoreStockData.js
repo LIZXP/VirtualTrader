@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { db } from '../../src/firebase/firebaseConfigBackend';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
 import moment from 'moment';
-import { storeFinnhubStockData } from '../../src/firebase/firebaseUtilFunctions';
 
 export default async (req) => {
     console.log('Starting fetchAndStoreStockData function');
@@ -17,18 +18,33 @@ export default async (req) => {
             });
         }
 
-        const finnhub_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
+        const finnhub_API_KEY = process.env.FINNHUB_API_KEY;
 
         const fetchAndEachStoreStockdata = async (stock) => {
+            let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
+            let fiveDigitString = randomFiveDigitNumber.toString().padStart(5, '0');
+            let sixDigitString = '1' + fiveDigitString;
+
             try {
                 const response = await axios.get(
                     `https://finnhub.io/api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`
                 );
                 const data = response.data;
+                const date = moment.unix(data.t).format('YYYY-MM-DD');
 
-                await storeFinnhubStockData(data, stock)
+                const stockDocRef = doc(db, 'stockPrice', stock);
+                const dateCollectionRef = collection(stockDocRef, 'historical');
+                const dateDocRef = doc(dateCollectionRef, date);
+
+                await setDoc(dateDocRef, {
+                    open: data.o,
+                    high: data.h,
+                    low: data.l,
+                    close: data.c,
+                    volume: sixDigitString,
+                });
+
                 console.log('Data successfully stored in Firebase for', stock);
-
             } catch (error) {
                 console.error('Error in fetching or storing data for', stock, ':', error);
             }
