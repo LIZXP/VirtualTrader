@@ -1,6 +1,7 @@
 import { db, auth } from './firebaseConfig';
-import { collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
+import { collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import moment from 'moment';
 
 
 export async function queryStockData(stockSymbol, startDate, endDate) {
@@ -21,4 +22,25 @@ export async function queryStockData(stockSymbol, startDate, endDate) {
     } catch (error) {
         console.error('Error querying stock data:', error);
     }
+}
+
+export const storeFinnhubStockData = async (data, stock) => {
+    let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
+    let fiveDigitString = randomFiveDigitNumber.toString().padStart(5, '0');
+    let sixDigitString = '1' + fiveDigitString;
+
+    const date = moment.unix(data.t).format('YYYY-MM-DD');
+
+    const stockDocRef = doc(db, 'stockPrice', stock);
+    const dateCollectionRef = collection(stockDocRef, 'historical');
+    const dateDocRef = doc(dateCollectionRef, date);
+
+    await setDoc(dateDocRef, {
+        open: data.o,
+        high: data.h,
+        low: data.l,
+        close: data.c,
+        volume: sixDigitString,
+    });
+
 }

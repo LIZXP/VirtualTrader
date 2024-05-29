@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { db } from '../../src/firebase/firebaseConfig';
-import { collection, doc, setDoc } from 'firebase/firestore';
 import { stocksSymbols } from '../../src/finnhubData/finnhubAPIFetching/stockSymbols';
 import moment from 'moment';
+import { storeFinnhubStockData } from '../../src/firebase/firebaseUtilFunctions';
 
 export default async (req) => {
     console.log('Starting fetchAndStoreStockData function');
@@ -18,47 +17,18 @@ export default async (req) => {
             });
         }
 
-        const finnhub_API_KEY = process.env.FINNHUB_API_KEY;
-        const firestore_API_KEY = process.env.FIRESTORE_API_KEY;
-        const firestore_AUTH_DOMAIN = process.env.FIRESTORE_AUTH_DOMAIN;
-        const firestore_PROJECT_ID = process.env.FIRESTORE_PROJECT_ID;
-        const firestore_STORAGE_BUCKET = process.env.FIRESTORE_STORAGE_BUCKET;
-        const firestore_MESSAGING_SENDER_ID = process.env.FIRESTORE_MESSAGING_SENDER_ID;
-        const firestore_APP_ID = process.env.FIRESTORE_APP_ID;
-        const firestore_MEASUREMENT_ID = process.env.FIRESTORE_MEASUREMENT_ID;
-
-        if (!finnhub_API_KEY || !firestore_API_KEY) {
-            throw new Error('Environment variables are not defined');
-        }
+        const finnhub_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
 
         const fetchAndEachStoreStockdata = async (stock) => {
-            let randomFiveDigitNumber = Math.floor(Math.random() * 100000);
-            let fiveDigitString = randomFiveDigitNumber.toString().padStart(5, '0');
-            let sixDigitString = '1' + fiveDigitString;
-
             try {
                 const response = await axios.get(
                     `https://finnhub.io/api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`
                 );
                 const data = response.data;
 
-                console.log(response.data); //<-------------here
-
-                const date = moment.unix(data.t).format('YYYY-MM-DD');
-
-                const stockDocRef = doc(db, 'stockPrice', stock);
-                const dateCollectionRef = collection(stockDocRef, 'historical');
-                const dateDocRef = doc(dateCollectionRef, date);
-
-                await setDoc(dateDocRef, {
-                    open: data.o,
-                    high: data.h,
-                    low: data.l,
-                    close: data.c,
-                    volume: sixDigitString,
-                });
-
+                await storeFinnhubStockData(data, stock)
                 console.log('Data successfully stored in Firebase for', stock);
+
             } catch (error) {
                 console.error('Error in fetching or storing data for', stock, ':', error);
             }
