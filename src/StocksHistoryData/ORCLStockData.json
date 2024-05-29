@@ -2,11 +2,39 @@
     "Meta Data": {
         "1. Information": "Daily Prices (open, high, low, close) and Volumes",
         "2. Symbol": "ORCL",
-        "3. Last Refreshed": "2024-05-21",
+        "3. Last Refreshed": "2024-05-28",
         "4. Output Size": "Full size",
         "5. Time Zone": "US/Eastern"
     },
     "Time Series (Daily)": {
+        "2024-05-28": {
+            "1. open": "123.2400",
+            "2. high": "124.8200",
+            "3. low": "123.0110",
+            "4. close": "124.4900",
+            "5. volume": "6911394"
+        },
+        "2024-05-24": {
+            "1. open": "123.4200",
+            "2. high": "123.5100",
+            "3. low": "121.4200",
+            "4. close": "122.9100",
+            "5. volume": "7173435"
+        },
+        "2024-05-23": {
+            "1. open": "126.5500",
+            "2. high": "126.7000",
+            "3. low": "123.1600",
+            "4. close": "124.0900",
+            "5. volume": "6108584"
+        },
+        "2024-05-22": {
+            "1. open": "124.6300",
+            "2. high": "125.1600",
+            "3. low": "123.2950",
+            "4. close": "124.6000",
+            "5. volume": "5705042"
+        },
         "2024-05-21": {
             "1. open": "124.4600",
             "2. high": "125.3600",

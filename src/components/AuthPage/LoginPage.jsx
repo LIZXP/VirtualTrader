@@ -7,10 +7,16 @@ import GoogleSvg from "../../assets/googleIcon.svg";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
 
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
+
+    const signInWithEmailAndPassword = () => {
+
+    }
 
     return (
         <Box display="flex" height="100vh">
@@ -40,11 +46,13 @@ const LoginPage = () => {
                             margin="normal"
                             label="Email"
                             type="email"
+                            onChange={(e) => { setLoginEmail(e.target.value) }}
                         />
                         <FormControl fullWidth variant="outlined" margin="normal">
                             <InputLabel htmlFor="password">Password</InputLabel>
                             <OutlinedInput
                                 id="password"
+                                onChange={(e) => { setLoginPassword(e.target.value) }}
                                 type={showPassword ? 'text' : 'password'}
                                 endAdornment={
                                     <InputAdornment position="end">

@@ -5,6 +5,7 @@ import NewsPageIndex from "../../components/NewsPage/NewsPageIndex.jsx"
 import StockMarketPage from "../../components/StockMarketPage/StockMarketPage.jsx";
 import LoginPage from "../../components/AuthPage/LoginPage.jsx";
 import SignUpPage from "../../components/AuthPage/SignUpPage.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/stockmarket" element={<MainPageLayout><StockMarketPage /></MainPageLayout>} />
         <Route path="/login" element={<MainPageLayout><LoginPage /></MainPageLayout>} />
         <Route path="/signup" element={<MainPageLayout><SignUpPage /></MainPageLayout>} />
+        {/* <Route path="/dashboard"element={<PrivateRoute></PrivateRoute>}/> */}
       </Routes>
     </BrowserRouter>
   );
