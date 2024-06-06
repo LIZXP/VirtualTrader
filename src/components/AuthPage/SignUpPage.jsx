@@ -99,6 +99,16 @@ const SignUpPage = () => {
         }
     }
 
+    const clearForm = () => {
+        SetCreateUserModel({
+            firstname: '',
+            lastname: '',
+            useremail: '',
+            password: '',
+            confirmPassword: '',
+        })
+    }
+
     const createUser = () => {
         const auth = getAuth();
         if (Object.values(errors).some((value) => { return value !== "" })) {
@@ -128,8 +138,14 @@ const SignUpPage = () => {
                 })
                 .finally(() => {
                     setIsLoading(false)
+                    clearForm();
                 })
         }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        createUser();
     }
 
     return (
@@ -243,7 +259,7 @@ const SignUpPage = () => {
                             <Typography variant="caption" color="error">{errors.confirmPasswordError}</Typography>
                         </FormControl>
                         <Box display="flex" flexDirection="column" gap={2} mb={2}>
-                            <Button fullWidth variant="contained" color="primary" onClick={createUser}>
+                            <Button fullWidth variant="contained" color="primary" onClick={handleSubmit}>
                                 Sign Up
                             </Button>
                         </Box>

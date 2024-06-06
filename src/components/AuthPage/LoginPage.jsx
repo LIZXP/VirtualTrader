@@ -4,19 +4,49 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 import AuthPicture from "../../assets/AuthPicture.svg";
 import GoogleSvg from "../../assets/googleIcon.svg";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import CircularWithResultMessage from "../BaseComponents/CircularWithResultMessage";
+import SetLoadingAndResultMessage from "../../customHooks/SetLoadingAndResultMessage";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
 
+    const navigate = useNavigate();
+    const auth = getAuth();
+    const { isLoading, setIsLoading, resultMessageModel, setResultMessageModel } = SetLoadingAndResultMessage();
+
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
 
-    const signInWithEmailAndPassword = () => {
+    const signIn = async () => {
+        try {
+            setIsLoading(true);
+            await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+            clearLoginForm();
+            navigate("/dashboard");
 
+        } catch (e) {
+            setResultMessageModel({
+                boolResult: false,
+                resultMessage: e.message
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const clearLoginForm = () => {
+        setLoginEmail("");
+        setLoginPassword("");
     }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        signIn();
+    };
 
     return (
         <Box display="flex" height="100vh">
@@ -73,9 +103,12 @@ const LoginPage = () => {
                             </Link>
                         </Box> */}
                         <Box display="flex" flexDirection="column" gap={2} mb={2}>
-                            <Button fullWidth variant="contained" color="primary">
+                            <Button fullWidth variant="contained" color="primary" onClick={handleSubmit}>
                                 Log In
                             </Button>
+                            <Box display="flex" justifyContent="center" paddingBottom="10px">
+                                <CircularWithResultMessage isLoadingProp={isLoading} boolResultProp={resultMessageModel.boolResult} resultMessageProp={resultMessageModel.resultMessage} />
+                            </Box >
                             <Button
                                 fullWidth
                                 variant="outlined"
