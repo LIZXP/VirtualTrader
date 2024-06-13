@@ -1,4 +1,4 @@
-import { setStockPrice, setStockNews, setCompanyNews } from "../actions/actions"
+import { setStockPrice, setStockNews, setCompanyNews } from "../actions/actions";
 import { stocksSymbols } from "./stockSymbols";
 import axios from 'axios';
 import moment from "moment";
@@ -8,25 +8,33 @@ const BASE_URL = 'https://finnhub.io/api/v1';
 
 export const fetchStockPrice = async (dispatch) => {
     try {
-        const getStocksData = (stock) => {
-            return axios.get(`${BASE_URL}/quote?symbol=${stock.name}&token=${API_KEY}`)
-                .then(response => ({
+        const getStocksData = async (stock) => {
+            try {
+                const response = await axios.get(`${BASE_URL}/quote?symbol=${stock.name}&token=${API_KEY}`);
+                return {
                     ...response.data,
                     symbol: stock.name,
-                    img: stock.img
-                }))
-                .catch((error) => {
-                    console.error("Error fetching stock data for", stock.name, error.message);
-                });
+                    img: stock.img,
+                    companyName: stock.companyName
+                };
+            } catch (error) {
+                console.error("Error fetching stock data for", stock.name, error.message);
+                return undefined;
+            }
         };
 
-        const allStockPriceData = stocksSymbols.map(ssymb => getStocksData(ssymb));
+        const allStockPriceData = await Promise.all(stocksSymbols.map(ssymb => getStocksData(ssymb)));
 
-        Promise.all(allStockPriceData)
-            .then(completeData => {
-                dispatch(setStockPrice(completeData.filter(data => data !== undefined)))
-            })
-            .catch(e => console.error('Error resolving stock prices:', e))
+        const validData = allStockPriceData.filter(data => data !== undefined);
+
+        dispatch(setStockPrice(validData));
+
+        const dataPriceSessionData = validData.reduce((acc, cur) => {
+            acc[cur.symbol] = cur;
+            return acc;
+        }, {});
+
+        sessionStorage.setItem("currentStocksPrice", JSON.stringify(dataPriceSessionData));
     } catch (error) {
         console.error('Failed to fetch stock prices:', error);
     }
@@ -34,10 +42,8 @@ export const fetchStockPrice = async (dispatch) => {
 
 export const fetchStockNews = async (dispatch) => {
     try {
-        axios.get(`${BASE_URL}/news?category=general&token=${API_KEY}`)
-            .then(res => {
-                dispatch(setStockNews(res.data));
-            }).catch(e => console.log(e))
+        const response = await axios.get(`${BASE_URL}/news?category=general&token=${API_KEY}`);
+        dispatch(setStockNews(response.data));
     } catch (error) {
         console.error('Failed to fetch stock news:', error);
     }
@@ -45,28 +51,26 @@ export const fetchStockNews = async (dispatch) => {
 
 export const fetchCompanyNews = async (dispatch) => {
     try {
-        const getCompanyNewsData = (stock) => {
-            const dateFormat = "YYYY-MM-DD"
-            const currentDay = moment(new Date()).format(dateFormat)
+        const getCompanyNewsData = async (stock) => {
+            const dateFormat = "YYYY-MM-DD";
+            const currentDay = moment(new Date()).format(dateFormat);
             const fiveDaysAgo = moment().subtract(3, 'days').format(dateFormat);
 
-            return axios.get(`${BASE_URL}/company-news?symbol=${stock.name}&from=${fiveDaysAgo}&to=${currentDay}&token=${API_KEY}`)
-                .then(res => {
-                    return { [stock.name]: res.data }
-                }).catch(e => {
-                    console.log(`Error fetching data for ${stock.name}:`, e);
-                    return { [stock.name]: { error: 'Failed to fetch data', details: e } };
-                })
-        }
-        const allStockPriceData = stocksSymbols.slice(0, 3).map(ssymb => getCompanyNewsData(ssymb));
+            try {
+                const response = await axios.get(`${BASE_URL}/company-news?symbol=${stock.name}&from=${fiveDaysAgo}&to=${currentDay}&token=${API_KEY}`);
+                return { [stock.name]: response.data };
+            } catch (error) {
+                console.log(`Error fetching data for ${stock.name}:`, error);
+                return { [stock.name]: { error: 'Failed to fetch data', details: error } };
+            }
+        };
 
-        Promise.all(allStockPriceData)
-            .then(completeData => {
-                const filteredData = completeData.reduce((acc, data) => ({ ...acc, ...data }), {});
-                dispatch(setCompanyNews(filteredData));
-            })
-            .catch(e => console.error('Error resolving stock prices:', e))
+        const allCompanyNewsData = await Promise.all(stocksSymbols.slice(0, 3).map(ssymb => getCompanyNewsData(ssymb)));
+
+        const filteredData = allCompanyNewsData.reduce((acc, data) => ({ ...acc, ...data }), {});
+        dispatch(setCompanyNews(filteredData));
+
     } catch (error) {
-        console.error('Failed to fetch stock news:', error);
+        console.error('Failed to fetch company news:', error);
     }
 };

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../../firebase/firebaseConfigFrontend";
+import PropTypes from 'prop-types';
 
 const AuthContext = createContext();
 
@@ -28,4 +29,8 @@ export const AuthProvider = ({ children }) => {
             {!loading && children}
         </AuthContext.Provider>
     )
+}
+
+AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired
 }

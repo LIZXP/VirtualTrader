@@ -1,4 +1,5 @@
 import { Alert, CircularProgress } from "@mui/material";
+import PropTypes from 'prop-types';
 
 function CircularWithResultMessage({ isLoadingProp, boolResultProp, resultMessageProp }) {
     return (
@@ -14,6 +15,13 @@ function CircularWithResultMessage({ isLoadingProp, boolResultProp, resultMessag
             )}
         </>
     );
+}
+
+
+CircularWithResultMessage.propTypes = {
+    isLoadingProp: PropTypes.bool.isRequired,
+    boolResultProp: PropTypes.bool.isRequired,
+    resultMessageProp: PropTypes.string
 }
 
 export default CircularWithResultMessage;
