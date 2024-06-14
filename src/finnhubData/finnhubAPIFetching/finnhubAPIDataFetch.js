@@ -15,7 +15,9 @@ export const fetchStockPrice = async (dispatch) => {
                     ...response.data,
                     symbol: stock.name,
                     img: stock.img,
-                    companyName: stock.companyName
+                    companyName: stock.companyName,
+                    website: stock.website,
+                    about: stock.about
                 };
             } catch (error) {
                 console.error("Error fetching stock data for", stock.name, error.message);
@@ -72,5 +74,33 @@ export const fetchCompanyNews = async (dispatch) => {
 
     } catch (error) {
         console.error('Failed to fetch company news:', error);
+    }
+};
+
+export const fetchCompanyNewsAndSavetoSession = async (stockName) => {
+
+    if (!stockName) {
+        console.log("cant passing in empty string!");
+        return;
+    }
+
+    const dateFormat = "YYYY-MM-DD";
+    const currentDay = moment(new Date()).format(dateFormat);
+    const fiveDaysAgo = moment().subtract(5, 'days').format(dateFormat);
+
+    try {
+        const response = await axios.get(`${BASE_URL}/company-news?symbol=${stockName}&from=${fiveDaysAgo}&to=${currentDay}&token=${API_KEY}`);
+
+        if (response.data && response.data.length > 0) {
+            response.data = response.data.filter(news => news.image).slice(0, 10);
+        }
+
+        sessionStorage.setItem("SelectedCompanyNews", JSON.stringify(response.data));
+        return response.data;
+
+    } catch (error) {
+        console.log(`Error fetching data for ${stockName}:`, error);
+        return { stockName: { error: 'Failed to fetch data', details: error } };
+
     }
 };

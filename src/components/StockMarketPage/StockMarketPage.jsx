@@ -1,9 +1,10 @@
 import { useState, useContext, useEffect } from "react";
-import { Avatar, Box, Button, Grid, Stack, Typography } from "@mui/material";
-import { fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+import { fetchCompanyNewsAndSavetoSession, fetchStockPrice } from "../../finnhubData/finnhubAPIFetching/finnhubAPIDataFetch";
 import { FinnhubDataContext } from "../../finnhubData/finnhubDataStore";
 import LineChart from "../BaseComponents/LineChart";
 import CollapseStockList from "./CollapseStockList/CollapseStockList";
+import AboutCompany from "./AboutSection/AboutCompany";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfigFrontend";
 import AAPLStockData from "../../StocksHistoryData/AAPLStockData.json";
@@ -27,6 +28,8 @@ import SQStockData from "../../StocksHistoryData/SQStockData.json";
 import TSLAStockData from "../../StocksHistoryData/TSLAStockData.json";
 import UBERStockData from "../../StocksHistoryData/UBERStockData.json";
 import moment from "moment";
+import { stocksSymbols } from "../../finnhubData/finnhubAPIFetching/stockSymbols";
+import CompanyNewsPage from "../CompanyNewsPage/CompanyNewsPage";
 
 let stockPriceIntervalId = null;
 
@@ -68,6 +71,7 @@ function StockMarketPage() {
         ],
     });
     const [clickedButton, setClickedButton] = useState(0);
+    const [companyNewsArray, setCompanyNewsArray] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const dateRangeButton = ["5D", "1M", "1QT", "YTD"];
@@ -106,24 +110,9 @@ function StockMarketPage() {
     }, [dispatch]);
 
     useEffect(() => {
-        if (state.stockPriceData) {
-            setChartData({
-                labels: state.stockPriceData.map((data) => data.time),
-                datasets: [
-                    {
-                        label: "Stock Price",
-                        data: state.stockPriceData.map((data) => data.price),
-                        borderColor: "rgba(75,192,192,1)",
-                        backgroundColor: "rgba(75,192,192,0.2)",
-                    },
-                ],
-            });
-        }
-    }, [state.stockPriceData]);
-
-    useEffect(() => {
         if (selectedStockSymbol) {
             formatStockPriceChart(clickedButton, selectedStockSymbol);
+            formatAndPrepareCompanyNews(selectedStockSymbol);
         }
     }, [selectedStockSymbol, clickedButton]);
 
@@ -150,6 +139,40 @@ function StockMarketPage() {
         }
         return dates;
     };
+
+    const formatAndPrepareCompanyNews = async (stockModel) => {
+        try {
+            if (!stockModel || !stockModel.symbol) {
+                console.log('No stock symbol provided');
+                return;
+            }
+
+            const sessionStorageValue = JSON.parse(sessionStorage.getItem("SelectedCompanyNews"));
+
+            if (sessionStorageValue && sessionStorageValue[0].related === stockModel.symbol) {
+                setCompanyNewsArray(sessionStorageValue);
+                return;
+            }
+
+            const companyNewsRawModel = await fetchCompanyNewsAndSavetoSession(stockModel.symbol)
+            if (!companyNewsRawModel || companyNewsRawModel.error) {
+                console.log("Empty news array or error fetching news, please check!");
+                return;
+            }
+
+            const savedCompanyNews = JSON.parse(sessionStorage.getItem("SelectedCompanyNews"));
+
+            if (savedCompanyNews) {
+                console.log("News fetched and saved to session storage:", savedCompanyNews);
+                setCompanyNewsArray(savedCompanyNews);
+            } else {
+                console.log("No news found in session storage after fetching.");
+            }
+        }
+        catch (e) {
+            console.log(e.message);
+        }
+    }
 
 
     const formatStockPriceChart = async (i, stockModel) => {
@@ -183,196 +206,52 @@ function StockMarketPage() {
                 };
             });
 
-            switch (i) {
-                case 0:
-                    if (fireBaseHistoricalData.length >= 5) {
-                        saveToSessionStorage("chartDataSet5D", fireBaseHistoricalData.slice(0, 5))
-                        const chartData = getFromSessionStorage("chartDataSet5D");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    else {
-                        const dates = getLastWorkingDays(5 - fireBaseHistoricalData.length, fireBaseHistoricalData.length);
-                        dates.forEach(d => {
-                            if (stockData["Time Series (Daily)"][d]) {
-                                fireBaseHistoricalData.unshift({
-                                    time: d,
-                                    price: parseFloat(stockData["Time Series (Daily)"][d]["4. close"]).toFixed(2)
-                                });
-                            }
-                        });
-                        saveToSessionStorage("chartDataSet5D", fireBaseHistoricalData)
-                        const chartData = getFromSessionStorage("chartDataSet5D");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    break;
+            const timeFrames = [
+                { caseValue: 0, days: 5, sessionKey: "chartDataSet5D" },
+                { caseValue: 1, days: 30, sessionKey: "chartDataSet1M" },
+                { caseValue: 2, days: 90, sessionKey: "chartDataSet1QT" },
+                { caseValue: 3, days: 365, sessionKey: "chartDataSet1Y" },
+            ];
 
-                case 1:
-                    if (fireBaseHistoricalData.length >= 30) {
-                        saveToSessionStorage("chartDataSet1M", fireBaseHistoricalData.slice(0, 30))
-                        const chartData = getFromSessionStorage("chartDataSet1M");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    else {
-                        const dates = getLastWorkingDays(30 - fireBaseHistoricalData.length, fireBaseHistoricalData.length);
-                        dates.forEach(d => {
-                            if (stockData["Time Series (Daily)"][d]) {
-                                fireBaseHistoricalData.unshift({
-                                    time: d,
-                                    price: parseFloat(stockData["Time Series (Daily)"][d]["4. close"]).toFixed(2)
-                                });
-                            }
-                        });
-                        saveToSessionStorage("chartDataSet1M", fireBaseHistoricalData)
-                        const chartData = getFromSessionStorage("chartDataSet1M");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    break;
-                case 2:
-                    if (fireBaseHistoricalData.length >= 90) {
-                        saveToSessionStorage("chartDataSet1QT", fireBaseHistoricalData.slice(0, 90))
-                        const chartData = getFromSessionStorage("chartDataSet1QT");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    else {
-                        const dates = getLastWorkingDays(90 - fireBaseHistoricalData.length, fireBaseHistoricalData.length);
-                        dates.forEach(d => {
-                            if (stockData["Time Series (Daily)"][d]) {
-                                fireBaseHistoricalData.unshift({
-                                    time: d,
-                                    price: parseFloat(stockData["Time Series (Daily)"][d]["4. close"]).toFixed(2)
-                                });
-                            }
-                        });
-                        saveToSessionStorage("chartDataSet1QT", fireBaseHistoricalData)
-                        const chartData = getFromSessionStorage("chartDataSet1QT");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    break;
+            const selectedTimeFrame = timeFrames.find(tf => tf.caseValue === i);
 
-                case 3:
-
-                    if (fireBaseHistoricalData.length >= 365) {
-                        saveToSessionStorage("chartDataSet1Y", fireBaseHistoricalData.slice(0, 365))
-                        const chartData = getFromSessionStorage("chartDataSet5D");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    else {
-                        const dates = getLastWorkingDays(365 - fireBaseHistoricalData.length, fireBaseHistoricalData.length);
-                        dates.forEach(d => {
-                            if (stockData["Time Series (Daily)"][d]) {
-                                fireBaseHistoricalData.unshift({
-                                    time: d,
-                                    price: parseFloat(stockData["Time Series (Daily)"][d]["4. close"]).toFixed(2)
-                                });
-                            }
-                        });
-                        saveToSessionStorage("chartDataSet1Y", fireBaseHistoricalData)
-                        const chartData = getFromSessionStorage("chartDataSet1Y");
-                        if (chartData) {
-                            setChartData({
-                                labels: chartData.map(data => data.time),
-                                datasets: [
-                                    {
-                                        label: "Stock Price",
-                                        data: chartData.map(data => data.price),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                    },
-                                ],
-                            });
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
+            if (selectedTimeFrame) {
+                await processChartData(selectedTimeFrame.days, selectedTimeFrame.sessionKey, fireBaseHistoricalData, stockData);
             }
         } catch (e) {
             console.log(e.message);
+        }
+    };
+
+    const processChartData = async (days, sessionKey, fireBaseHistoricalData, stockData) => {
+        if (fireBaseHistoricalData.length >= days) {
+            saveToSessionStorage(sessionKey, fireBaseHistoricalData.slice(0, days));
+        } else {
+            const dates = getLastWorkingDays(days - fireBaseHistoricalData.length, fireBaseHistoricalData.length);
+            dates.forEach(d => {
+                if (stockData["Time Series (Daily)"][d]) {
+                    fireBaseHistoricalData.unshift({
+                        time: d,
+                        price: parseFloat(stockData["Time Series (Daily)"][d]["4. close"]).toFixed(2),
+                    });
+                }
+            });
+            saveToSessionStorage(sessionKey, fireBaseHistoricalData);
+        }
+
+        const chartData = getFromSessionStorage(sessionKey);
+        if (chartData) {
+            setChartData({
+                labels: chartData.map(data => data.time),
+                datasets: [
+                    {
+                        label: "Stock Price",
+                        data: chartData.map(data => data.price),
+                        borderColor: "rgba(75,192,192,1)",
+                        backgroundColor: "rgba(75,192,192,0.2)",
+                    },
+                ],
+            });
         }
     };
 
@@ -404,7 +283,7 @@ function StockMarketPage() {
 
     return (
         <Grid container spacing={2} sx={{ width: "90%", marginX: "auto", marginTop: { xs: "54px", sm: "87px" }, borderRadius: "25px" }}>
-            <Grid item xs={12} sx={{ borderBottom: "grey solid 1px", marginBottom: "5px" }}>
+            <Grid item xs={12} sx={{ borderBottom: "#D3D3D3 solid 1px", marginBottom: "5px" }}>
                 <Box sx={{ display: "flex" }}>
                     {selectedStockSymbol && (
                         <>
@@ -448,23 +327,25 @@ function StockMarketPage() {
                     ))}
                 </Stack>
                 <LineChart chartData={chartData} />
+                <Grid item >
+                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginY: "10px" }}>
+                        News
+                    </Typography>
+                    <CompanyNewsPage companyNewsArray={companyNewsArray} />
+                </Grid>
             </Grid>
-            <Grid item xs={12} md={5} lg={4} xl={3}>
+            <Grid item xs={12} md={5} lg={4} xl={3} sx={{ borderLeft: { md: "#D3D3D3 solid 1px", xs: "none" } }}>
                 <Grid item xs={12}>
-                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginTop: "10px", borderBottom: "grey solid 1px", paddingBottom: "10px" }}>
+                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginTop: "10px", borderBottom: "#D3D3D3 solid 1px", paddingBottom: "10px" }}>
                         Explore More Opportunities
                     </Typography>
                     <CollapseStockList initialStockList={initialStockList} remainingStockList={remainingStockList} setSelectedStockSymbol={setSelectedStockSymbol} />
                 </Grid>
-                <Grid item xs={12} sx={{ borderTop: "grey solid 1px", borderBottom: "grey solid 1px", marginTop: "10px" }}>
-                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginTop: "10px" }}>
-                        Explore More Opportunities1
+                <Grid item xs={12} sx={{ borderTop: "#D3D3D3 solid 1px", borderBottom: "#D3D3D3 solid 1px", marginTop: "10px" }}>
+                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginY: "10px" }}>
+                        About
                     </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="h6" sx={{ lineHeight: "1.2em", marginTop: "10px" }}>
-                        Explore More Opportunities2
-                    </Typography>
+                    <AboutCompany selectedStockModel={selectedStockSymbol} />
                 </Grid>
             </Grid>
         </Grid>

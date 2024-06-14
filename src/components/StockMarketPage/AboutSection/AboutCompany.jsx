@@ -1,14 +1,23 @@
-import { Box } from '@mui/material'
+import { Box, Link } from '@mui/material'
+import PublicIcon from '@mui/icons-material/Public'
 import PropTypes from 'prop-types'
 
-const AboutCompany = ({ stockObj }) => {
+const AboutCompany = ({ selectedStockModel }) => {
+    const linkTextformat = selectedStockModel.website.replace("https://www.", "")
     return (
-        <Box>this is about section</Box>
+        <>
+            <Link href={selectedStockModel.website} target="_blank" rel="noopener noreferrer"
+                sx={{ display: "flex", alignItems: "center", border: "grey solid 1px", padding: "3px 5px", borderRadius: "15px", width: "116px" }}>
+                <PublicIcon sx={{ marginRight: "5px" }} />
+                {linkTextformat}
+            </Link>
+            <Box dangerouslySetInnerHTML={{ __html: selectedStockModel.about }}></Box>
+        </>
     )
 }
 
 AboutCompany.propTypes = {
-    stockObj: PropTypes.object.isRequired
+    selectedStockModel: PropTypes.object.isRequired
 }
 
 export default AboutCompany

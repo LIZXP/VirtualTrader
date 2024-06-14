@@ -28,7 +28,7 @@ const CollapseStockList = ({ initialStockList, remainingStockList, setSelectedSt
                             justifyContent="space-between"
                             sx={{
                                 marginTop: "0",
-                                borderBottom: "grey solid 1px",
+                                borderBottom: "#D3D3D3 solid 1px",
                                 paddingY: "6px",
                                 cursor: "pointer",
                                 '&:hover': { backgroundColor: "#f0f0f0" }

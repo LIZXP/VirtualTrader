@@ -95,7 +95,7 @@ function NewsPageIndex() {
             }
         }
     };
-    console.log(state);
+
     return (
         <Grid container spacing={2} sx={{ minHeight: "100%", width: "90%", marginX: "auto", marginTop: { xs: "54px", sm: "84px" }, borderRadius: "25px" }}>
             <Grid item xs={12} md={7} sx={{ height: "100%" }}>
